@@ -13,7 +13,6 @@ const squares = (function () {
     return { allButtons }
 })()
 
-// Makes the Grid
 const placeMarkers = (function () {
 
     const counter = function () {
@@ -29,38 +28,47 @@ const placeMarkers = (function () {
         }
     }
 
-    //  should check for a win 
-    const checkWin = function(marker) {
-        const getMarkerList = (function(){
+    let won = false
+
+    const checkWin = function (marker) {
+        if (won === true) return
+
+        const getMarkerList = (function () {
             const markerList = document.querySelectorAll(`.${marker}`)
             const selectedTiles = []
             markerList.forEach(mark => {
                 const classMark = mark.classList.value.split(' ')[1]
                 selectedTiles.push(+classMark)
             });
-            return {selectedTiles}
+            return { selectedTiles }
         })(); const selectedTiles = getMarkerList.selectedTiles.sort()
 
-         const winning = [[1,2,3], [4,5,6], [7,8,9], [1,4,7], [2,5,8], [3,6,9], [1,5,9], [3,5,7]]
+        const winning = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 4, 7], [2, 5, 8], [3, 6, 9], [1, 5, 9], [3, 5, 7]];
 
-         console.log(selectedTiles)
-        
-         winning.forEach(set => {
-            return set.every(r => selectedTiles.includes(r)) ? console.log(marker + ' Wins') : null
-         })
-    }; 
+        console.log(selectedTiles)
+
+        winning.forEach(set => {
+            if (set.every(r => selectedTiles.includes(r))) {
+                console.log(marker + ' Wins')
+                return won = true
+            }
+        })
+        // WHEN THERE'S A TIE
+        if (won === false && document.querySelectorAll('.X').length + document.querySelectorAll('.O').length === 9) return console.log('tie')
+    };
 
     // turnChooser should select what element is going to be placed
-    const addEvents = function () {
+    const addEvents = (function () {
         const test = counter()
 
         const alternate = function () {
+            if (won === true) return
             let thing = test.check()
             if (Array.from(this.classList).includes('X') || Array.from(this.classList).includes('O')) return
             thing ? this.classList.add('O') : this.classList.add('X')
             test.addOne()
 
-            placeMarkers.checkWin('X')
+            checkWin(thing ? 'O' : 'X')
             return
         }
 
@@ -69,11 +77,8 @@ const placeMarkers = (function () {
             allButtons.forEach(button => button.addEventListener('click', alternate))
         })()
 
-    }; addEvents()
+    })()
 
-    return {
-        checkWin
-    }
 })()
 
 
