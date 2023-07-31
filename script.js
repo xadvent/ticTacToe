@@ -1,4 +1,6 @@
 const playableArea = document.querySelector('.grid-container')
+const startModal = document.querySelector('#start-modal')
+const startButton = document.querySelector('#start-button')
 
 const squares = (function () {
     let squares = []
@@ -13,7 +15,48 @@ const squares = (function () {
     return { allButtons }
 })()
 
-const placeMarkers = (function () {
+const playGame = (function () {
+
+    const getPlayers = (function () {
+        let decider = 0;
+        // Going to store user Info     TO DO 
+        const Player = function (name, symbol) {
+            const title = name ? name : decider === 0 ? 'X' : 'O'
+            const marker = symbol ? symbol : decider === 0 ? 'X' : 'O'
+            decider++
+
+            return {
+                title,
+                marker
+            }
+        }
+
+        // gets value's from Starting form - stores into an object
+        const pickNames = function (event) {
+            event.preventDefault();
+
+            console.log(event.target)
+            startModal.classList.add('hidden')
+            playableArea.classList.remove('hidden')
+            const myFormData = new FormData(document.querySelector('#startForm'));
+            const myFormObj = {}
+            myFormData.forEach((value, key) => myFormObj[key] = value)
+
+            const playerOne = Player(myFormObj.p1, myFormObj.s1)
+            const playerTwo = Player(myFormObj.p2, myFormObj.s2)
+            console.log(playerOne)
+
+            return {
+                playerOne,
+                playerTwo
+            }
+        }
+        startButton.addEventListener('click', pickNames);
+        return {
+        }
+    })()
+
+
 
     const counter = function () {
         let _count = 1;
@@ -79,12 +122,16 @@ const placeMarkers = (function () {
 
     })()
 
+
 })()
 
 
 /*
-6. Write down potential winning lines
-7. Check for win on each turn
 8. Add a restart button
-9. Create an option to select player or Bot
+    clear the board
+    clear refresh functions
+8.5 Create a winning screen that shows with restart button
+9. Add sounds for game
+10. Create an option to select player or Bot
+11. Add animations for the Game
 */

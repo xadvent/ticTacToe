@@ -11,12 +11,39 @@
 </head>
 
 <body>
-    <div class="container">
-        <div class="grid-container"></div>
+    <div id="container">
+
+        <div class="grid-container hidden"></div>
+
+        <form id="startForm">
+            <div id="start-modal" class="modal">
+                <div class="players">
+                    <div class="first">
+                        <label for="p1">Player One</label>
+                        <input type="text" placeholder="Name" name="p1" id="p1">
+                        <input type="text" name="s1" id="s1" placeholder="Symbol" maxlength="1">
+                    </div>
+                    <div class="second">
+                        <label for="p2">Player Two</label>
+                        <input type="text" name="p2" id="p2" placeholder="Name">
+                        <input type="text" name="s2" id="s2" placeholder="Symbol" maxlength="1">
+                    </div>
+                </div>
+                <button id="start-button" type="submit">Start</button>
+            </div>
+        </form>
+        <div id="results-modal" class="modal hidden">
+            <h1 class="winner"></h1>
+            <button>Replay?</button>
+        </div>
     </div>
+
+
+
     <div class="footer">
         <a href="index.html">Pierce Strutt | 2023 The Odin Project</a>
     </div>
+
 </body>
 
 </html>
