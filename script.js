@@ -26,7 +26,6 @@ const reload = function () {
 const pickNames = function (event) {
     event.preventDefault();
 
-    console.log(event.target)
     startModal.classList.add('hidden')
     playableArea.classList.remove('hidden')
     const myFormData = new FormData(document.querySelector('#startForm'));
@@ -35,7 +34,6 @@ const pickNames = function (event) {
 
     const playerOne = Player(myFormObj.p1, myFormObj.s1)
     const playerTwo = Player(myFormObj.p2, myFormObj.s2)
-    console.log(playerOne)
 
     playGame(playerOne, playerTwo)
     return
@@ -169,11 +167,6 @@ const sounds = (function () {
 })()
 
 /*
-8. Add a restart button
-    clear the board
-    clear refresh functions
-8.5 Create a winning screen that shows with restart button
-9. Add sounds for game
 10. Create an option to select player or Bot
 11. Add animations for the Game
 */

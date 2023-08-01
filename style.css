@@ -94,8 +94,8 @@ button {
 .players {
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
-    gap: 20px;
+    justify-content: start;
+    gap: 25px;
 }
 .players > * {
     display: flex;
@@ -123,7 +123,8 @@ button {
     border-radius: 5px;
     border: 1px solid var(--lighter-bgc);
 }
-.modal > button {
+.modal > button,
+#start-button {
     width: 20vw;
     height: 60px;
     border-radius: 25px;
