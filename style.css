@@ -176,3 +176,24 @@ button {
     grid-row: 4;
     justify-self: center;
 }
+
+#results-modal {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 2fr 1fr;
+    column-gap: 20px;
+}
+.winner {
+    grid-row: 1;
+    grid-column: 1 / -1;
+    text-align: center;
+}
+.reload, .restart {
+    min-width: 100px;
+}
+.reload {
+    justify-self: right;
+}
+.restart {
+    justify-self: left;
+}

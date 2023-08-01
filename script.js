@@ -5,6 +5,7 @@ const createStyleAfter = document.createElement('style')
 const results = document.querySelector('#results-modal')
 const resultsText = document.querySelector('.winner')
 const reloadButton = document.querySelector('.reload')
+const restartButton = document.querySelector('.restart')
 
 const squares = (function () {
     let squares = []
@@ -19,42 +20,61 @@ const squares = (function () {
     return { allButtons }
 })()
 
-const reload = function () {
-    sounds.playStart()
-    return window.open('./index.html', "_self")
-};
+const allNames = (function () {
 
-const pickNames = function (event) {
-    event.preventDefault();
-
-    sounds.playStart()
-    startModal.classList.add('hidden')
-    playableArea.classList.remove('hidden')
-    const myFormData = new FormData(document.querySelector('#startForm'));
-    const myFormObj = {}
-    myFormData.forEach((value, key) => myFormObj[key] = value)
-
-    const playerOne = Player(myFormObj.p1, myFormObj.s1)
-    const playerTwo = Player(myFormObj.p2, myFormObj.s2)
-
-    playGame(playerOne, playerTwo)
-    return
-}
-
-let decider = 0;
-const Player = function (name, symbol) {
-    const title = name ? name[0].toUpperCase() + name.substr(1).toLowerCase() : decider === 0 ? 'X' : 'O'
-    const marker = symbol ? symbol[0].toUpperCase() : decider === 0 ? 'X' : 'O'
-    decider++
-
-    return {
-        title,
-        marker
+    const restart = function() {
+        return window.open('./index.html', '_self')
     }
-}
+    const reload = function () {
+        sounds.playStart()
+        results.classList.add('hidden')
+        for (i of squares.allButtons) {
+            i.classList.remove('firstMark')
+            i.classList.remove('secondMark')
+        }
+        playableArea.classList.remove('hidden')
+        const myFormData = new FormData(document.querySelector('#startForm'));
+        const myFormObj = {}
+        myFormData.forEach((value, key) => myFormObj[key] = value)
 
-reloadButton.addEventListener('click', reload)
-startButton.addEventListener('click', pickNames)
+        const playerOne = Player(myFormObj.p1, myFormObj.s1)
+        const playerTwo = Player(myFormObj.p2, myFormObj.s2)
+        playGame(playerOne, playerTwo)
+        return
+        //return window.open('./index.html', "_self")
+    };
+    const pickNames = function (event) {
+        event.preventDefault();
+
+        sounds.playStart()
+        startModal.classList.add('hidden')
+        playableArea.classList.remove('hidden')
+        const myFormData = new FormData(document.querySelector('#startForm'));
+        const myFormObj = {}
+        myFormData.forEach((value, key) => myFormObj[key] = value)
+
+        const playerOne = Player(myFormObj.p1, myFormObj.s1)
+        const playerTwo = Player(myFormObj.p2, myFormObj.s2)
+        playGame(playerOne, playerTwo)
+        return 
+    }
+
+    let decider = 2;
+    const Player = function (name, symbol) {
+        const title = name ? name[0].toUpperCase() + name.substr(1).toLowerCase() : decider % 2 === 0 ? 'X' : 'O'
+        const marker = symbol ? symbol[0].toUpperCase() : decider % 2 === 0 ? 'X' : 'O'
+        decider++
+
+        return {
+            title,
+            marker
+        }
+    }
+
+    reloadButton.addEventListener('click', reload)
+    restartButton.addEventListener('click', restart)
+    startButton.addEventListener('click', pickNames)
+})()
 
 const playGame = function (playerOne, playerTwo) {
     const addTileContent = (() => {
@@ -139,6 +159,7 @@ const playGame = function (playerOne, playerTwo) {
 
     })()
 }
+
 const sounds = (function () {
     const startSound = new Audio('sounds/arcade-start.wav')
     const placeMarker1 = new Audio('sounds/place1.mp3')
