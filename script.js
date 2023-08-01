@@ -4,6 +4,7 @@ const startButton = document.querySelector('#start-button')
 const createStyleAfter = document.createElement('style')
 const results = document.querySelector('#results-modal')
 const resultsText = document.querySelector('.winner')
+const reloadButton = document.querySelector('.reload')
 
 const squares = (function () {
     let squares = []
@@ -17,6 +18,10 @@ const squares = (function () {
     const allButtons = document.querySelectorAll('.tile')
     return { allButtons }
 })()
+
+const reload = function () {
+    return window.open('./index.html', "_self")
+};
 
 const pickNames = function (event) {
     event.preventDefault();
@@ -47,6 +52,8 @@ const Player = function (name, symbol) {
         marker
     }
 }
+
+reloadButton.addEventListener('click', reload)
 startButton.addEventListener('click', pickNames)
 
 const playGame = function (playerOne, playerTwo) {
@@ -92,12 +99,9 @@ const playGame = function (playerOne, playerTwo) {
 
         const winning = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 4, 7], [2, 5, 8], [3, 6, 9], [1, 5, 9], [3, 5, 7]];
 
-        console.log(selectedTiles)
-
         winning.forEach(set => {
             if (set.every(r => selectedTiles.includes(r))) {
                 const winner = marker === 'firstMark' ? playerOne.title : playerTwo.title
-                console.log(winner + ' wins')
                 playableArea.classList.add('hidden')
                 resultsText.textContent = `${winner} wins!`
                 results.classList.remove('hidden')
@@ -105,7 +109,11 @@ const playGame = function (playerOne, playerTwo) {
                 return won = true
             }
         })
-        if (won === false && document.querySelectorAll('.firstMark').length + document.querySelectorAll('.secondMark').length === 9) return console.log('tie')
+        if (won === false && document.querySelectorAll('.firstMark').length + document.querySelectorAll('.secondMark').length === 9) {
+            playableArea.classList.add('hidden')
+            resultsText.textContent = `Tie... No Winner.`
+            results.classList.remove('hidden')
+        }
     };
 
     const addEvents = (function () {
@@ -141,8 +149,8 @@ const sounds = (function () {
     placeMarker1.mozPreservesPitch = true;
     placeMarker2.mozPreservesPitch = true;
 
-    placeMarker1.playbackRate = 2 
-    placeMarker2.playbackRate = 2 
+    placeMarker1.playbackRate = 2
+    placeMarker2.playbackRate = 2
 
     const playSound1 = () => {
         placeMarker1.load()

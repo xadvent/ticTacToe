@@ -84,7 +84,7 @@ button {
 
 .modal {
     width: 80vw;
-    height: 50vh;
+    height: 60vh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -95,7 +95,7 @@ button {
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
-    gap: 20vw;
+    gap: 20px;
 }
 .players > * {
     display: flex;
@@ -144,4 +144,33 @@ button {
 }
 .secondMark::after {
     color: var(--lighter-bgc)
+}
+
+#start-modal {
+    height: 90vh;
+    width: 95vw;
+    display: grid;
+    grid-template-rows:100px 1fr 1fr 1fr;
+    grid-template-columns: 2fr 4fr;
+    grid-column-gap: 10px;
+}
+#start-modal h1 {
+    grid-row: 1;
+    grid-column: 1 / -1;
+    text-align: center;
+}
+#customize, #information {
+    text-align: center;
+}
+#customize{
+    grid-row: 3;
+    grid-template-columns: 1/ 3;
+}
+#start-modal .players {
+    grid-row: 3;
+}
+#start-button {
+    grid-column: 1 / 3;
+    grid-row: 4;
+    justify-self: center;
 }
