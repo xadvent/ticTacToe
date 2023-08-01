@@ -37,7 +37,6 @@ const pickNames = function (event) {
 }
 
 let decider = 0;
-// Going to store user Info     TO DO 
 const Player = function (name, symbol) {
     const title = name ? name[0].toUpperCase() + name.substr(1).toLowerCase() : decider === 0 ? 'X' : 'O'
     const marker = symbol ? symbol[0].toUpperCase() : decider === 0 ? 'X' : 'O'
@@ -63,7 +62,6 @@ const playGame = function (playerOne, playerTwo) {
         return
     })()
 
-    // gets value's from Starting form - stores into an object
     const counter = function () {
         let _count = 1;
         const check = () => {
@@ -102,16 +100,14 @@ const playGame = function (playerOne, playerTwo) {
                 console.log(winner + ' wins')
                 playableArea.classList.add('hidden')
                 resultsText.textContent = `${winner} wins!`
-                results.classList.remove('hidden')                
+                results.classList.remove('hidden')
 
                 return won = true
             }
         })
-        // WHEN THERE'S A TIE
         if (won === false && document.querySelectorAll('.firstMark').length + document.querySelectorAll('.secondMark').length === 9) return console.log('tie')
     };
 
-    // turnChooser should select what element is going to be placed
     const addEvents = (function () {
         const test = counter()
 
@@ -120,6 +116,7 @@ const playGame = function (playerOne, playerTwo) {
             let thing = test.check()
             if (Array.from(this.classList).includes('secondMark') || Array.from(this.classList).includes("firstMark")) return
             thing ? this.classList.add('secondMark') : this.classList.add('firstMark')
+            thing ? sounds.playSound2() : sounds.playSound1()
             test.addOne()
 
 
@@ -133,10 +130,35 @@ const playGame = function (playerOne, playerTwo) {
         })()
 
     })()
-
-
 }
+const sounds = (function () {
+    const placeMarker1 = new Audio('sounds/place1.mp3')
+    const placeMarker2 = new Audio('sounds/place2.mp3')
 
+    placeMarker1.volume = 0.3
+    placeMarker2.volume = 0.3
+
+    placeMarker1.mozPreservesPitch = true;
+    placeMarker2.mozPreservesPitch = true;
+
+    placeMarker1.playbackRate = 2 
+    placeMarker2.playbackRate = 2 
+
+    const playSound1 = () => {
+        placeMarker1.load()
+        placeMarker1.play()
+        return
+    }
+    const playSound2 = () => {
+        placeMarker2.load()
+        placeMarker2.play()
+        return
+    }
+    return {
+        playSound1,
+        playSound2
+    }
+})()
 
 /*
 8. Add a restart button
