@@ -20,12 +20,14 @@ const squares = (function () {
 })()
 
 const reload = function () {
+    sounds.playStart()
     return window.open('./index.html', "_self")
 };
 
 const pickNames = function (event) {
     event.preventDefault();
 
+    sounds.playStart()
     startModal.classList.add('hidden')
     playableArea.classList.remove('hidden')
     const myFormData = new FormData(document.querySelector('#startForm'));
@@ -138,11 +140,13 @@ const playGame = function (playerOne, playerTwo) {
     })()
 }
 const sounds = (function () {
+    const startSound = new Audio('sounds/arcade-start.wav')
     const placeMarker1 = new Audio('sounds/place1.mp3')
     const placeMarker2 = new Audio('sounds/place2.mp3')
 
     placeMarker1.volume = 0.3
     placeMarker2.volume = 0.3
+    startSound.volume = 0.38
 
     placeMarker1.mozPreservesPitch = true;
     placeMarker2.mozPreservesPitch = true;
@@ -160,13 +164,20 @@ const sounds = (function () {
         placeMarker2.play()
         return
     }
+    const playStart = () => {
+        startSound.load()
+        startSound.play()
+        return
+    }
     return {
         playSound1,
-        playSound2
+        playSound2,
+        playStart
     }
 })()
 
 /*
 10. Create an option to select player or Bot
+    - Difficulties from Random Selection to MinMax
 11. Add animations for the Game
 */
