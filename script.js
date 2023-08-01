@@ -2,6 +2,8 @@ const playableArea = document.querySelector('.grid-container')
 const startModal = document.querySelector('#start-modal')
 const startButton = document.querySelector('#start-button')
 const createStyleAfter = document.createElement('style')
+const results = document.querySelector('#results-modal')
+const resultsText = document.querySelector('.winner')
 
 const squares = (function () {
     let squares = []
@@ -98,6 +100,10 @@ const playGame = function (playerOne, playerTwo) {
             if (set.every(r => selectedTiles.includes(r))) {
                 const winner = marker === 'firstMark' ? playerOne.title : playerTwo.title
                 console.log(winner + ' wins')
+                playableArea.classList.add('hidden')
+                resultsText.textContent = `${winner} wins!`
+                results.classList.remove('hidden')                
+
                 return won = true
             }
         })
