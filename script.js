@@ -1,6 +1,7 @@
 const playableArea = document.querySelector('.grid-container')
 const startModal = document.querySelector('#start-modal')
 const startButton = document.querySelector('#start-button')
+const createStyleAfter = document.createElement('style')
 
 const squares = (function () {
     let squares = []
@@ -15,49 +16,52 @@ const squares = (function () {
     return { allButtons }
 })()
 
-const playGame = (function () {
+const pickNames = function (event) {
+    event.preventDefault();
 
-    const getPlayers = (function () {
-        let decider = 0;
-        // Going to store user Info     TO DO 
-        const Player = function (name, symbol) {
-            const title = name ? name : decider === 0 ? 'X' : 'O'
-            const marker = symbol ? symbol : decider === 0 ? 'X' : 'O'
-            decider++
+    console.log(event.target)
+    startModal.classList.add('hidden')
+    playableArea.classList.remove('hidden')
+    const myFormData = new FormData(document.querySelector('#startForm'));
+    const myFormObj = {}
+    myFormData.forEach((value, key) => myFormObj[key] = value)
 
-            return {
-                title,
-                marker
-            }
-        }
+    const playerOne = Player(myFormObj.p1, myFormObj.s1)
+    const playerTwo = Player(myFormObj.p2, myFormObj.s2)
+    console.log(playerOne)
 
-        // gets value's from Starting form - stores into an object
-        const pickNames = function (event) {
-            event.preventDefault();
+    playGame(playerOne, playerTwo)
+    return
+}
 
-            console.log(event.target)
-            startModal.classList.add('hidden')
-            playableArea.classList.remove('hidden')
-            const myFormData = new FormData(document.querySelector('#startForm'));
-            const myFormObj = {}
-            myFormData.forEach((value, key) => myFormObj[key] = value)
+let decider = 0;
+// Going to store user Info     TO DO 
+const Player = function (name, symbol) {
+    const title = name ? name[0].toUpperCase() + name.substr(1).toLowerCase() : decider === 0 ? 'X' : 'O'
+    const marker = symbol ? symbol[0].toUpperCase() : decider === 0 ? 'X' : 'O'
+    decider++
 
-            const playerOne = Player(myFormObj.p1, myFormObj.s1)
-            const playerTwo = Player(myFormObj.p2, myFormObj.s2)
-            console.log(playerOne)
+    return {
+        title,
+        marker
+    }
+}
+startButton.addEventListener('click', pickNames)
 
-            return {
-                playerOne,
-                playerTwo
-            }
-        }
-        startButton.addEventListener('click', pickNames);
-        return {
-        }
+const playGame = function (playerOne, playerTwo) {
+    const addTileContent = (() => {
+        createStyleAfter.innerHTML =
+            `.firstMark::after {
+       content: '${playerOne.marker}' 
+   }
+   .secondMark::after {
+        content: '${playerTwo.marker}'
+   }`
+        document.head.appendChild(createStyleAfter)
+        return
     })()
 
-
-
+    // gets value's from Starting form - stores into an object
     const counter = function () {
         let _count = 1;
         const check = () => {
@@ -92,12 +96,13 @@ const playGame = (function () {
 
         winning.forEach(set => {
             if (set.every(r => selectedTiles.includes(r))) {
-                console.log(marker + ' Wins')
+                const winner = marker === 'firstMark' ? playerOne.title : playerTwo.title
+                console.log(winner + ' wins')
                 return won = true
             }
         })
         // WHEN THERE'S A TIE
-        if (won === false && document.querySelectorAll('.X').length + document.querySelectorAll('.O').length === 9) return console.log('tie')
+        if (won === false && document.querySelectorAll('.firstMark').length + document.querySelectorAll('.secondMark').length === 9) return console.log('tie')
     };
 
     // turnChooser should select what element is going to be placed
@@ -107,11 +112,12 @@ const playGame = (function () {
         const alternate = function () {
             if (won === true) return
             let thing = test.check()
-            if (Array.from(this.classList).includes('X') || Array.from(this.classList).includes('O')) return
-            thing ? this.classList.add('O') : this.classList.add('X')
+            if (Array.from(this.classList).includes('secondMark') || Array.from(this.classList).includes("firstMark")) return
+            thing ? this.classList.add('secondMark') : this.classList.add('firstMark')
             test.addOne()
 
-            checkWin(thing ? 'O' : 'X')
+
+            checkWin(thing ? 'secondMark' : 'firstMark')
             return
         }
 
@@ -123,7 +129,7 @@ const playGame = (function () {
     })()
 
 
-})()
+}
 
 
 /*

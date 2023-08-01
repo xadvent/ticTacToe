@@ -64,21 +64,9 @@ body {
     background-color: var(--bkgrcolor);
     transition: 0.5s;
 }
-
 .tile:hover {
     background-color: var(--highlight-box);
 }
-
-.X::after {
-    content: 'X';
-    color: var(--alt-lighter-bgc)
-}
-
-.O::after {
-    content: 'O';
-    color: var(--lighter-bgc)
-}
-
 .grid-container>button {
     border: none;
     border-style: none;
@@ -150,4 +138,10 @@ button {
 }
 .modal > button:active {
     background-color: var(--button-color);
+}
+.firstMark:after {
+    color: var(--alt-lighter-bgc)
+}
+.secondMark::after {
+    color: var(--lighter-bgc)
 }
