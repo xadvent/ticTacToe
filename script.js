@@ -7,6 +7,42 @@ const resultsText = document.querySelector('.winner')
 const reloadButton = document.querySelector('.reload')
 const restartButton = document.querySelector('.restart')
 
+const sounds = (function () {
+    const startSound = new Audio('sounds/arcade-start.wav')
+    const placeMarker1 = new Audio('sounds/place1.mp3')
+    const placeMarker2 = new Audio('sounds/place2.mp3')
+
+    placeMarker1.volume = 0.6
+    placeMarker2.volume = 0.6
+    startSound.volume = 0.7
+
+    placeMarker1.mozPreservesPitch = true;
+    placeMarker2.mozPreservesPitch = true;
+
+    placeMarker1.playbackRate = 2
+    placeMarker2.playbackRate = 2
+
+    const playSound1 = () => {
+        placeMarker1.load()
+        placeMarker1.play()
+        return
+    }
+    const playSound2 = () => {
+        placeMarker2.load()
+        placeMarker2.play()
+        return
+    }
+    const playStart = () => {
+        startSound.load()
+        startSound.play()
+        return
+    }
+    return {
+        playSound1,
+        playSound2,
+        playStart
+    }
+})()
 const squares = (function () {
     let squares = []
     for (let i = 1; i <= 9; i++) {
@@ -17,48 +53,11 @@ const squares = (function () {
         playableArea.appendChild(tile)
     }
     const allButtons = document.querySelectorAll('.tile')
+    sounds.playStart
     return { allButtons }
 })()
 
-const allNames = (function () {
-
-    const restart = function() {
-        return window.open('./index.html', '_self')
-    }
-    const reload = function () {
-        sounds.playStart()
-        results.classList.add('hidden')
-        for (i of squares.allButtons) {
-            i.classList.remove('firstMark')
-            i.classList.remove('secondMark')
-        }
-        playableArea.classList.remove('hidden')
-        const myFormData = new FormData(document.querySelector('#startForm'));
-        const myFormObj = {}
-        myFormData.forEach((value, key) => myFormObj[key] = value)
-
-        const playerOne = Player(myFormObj.p1, myFormObj.s1)
-        const playerTwo = Player(myFormObj.p2, myFormObj.s2)
-        playGame(playerOne, playerTwo)
-        return
-        //return window.open('./index.html', "_self")
-    };
-    const pickNames = function (event) {
-        event.preventDefault();
-
-        sounds.playStart()
-        startModal.classList.add('hidden')
-        playableArea.classList.remove('hidden')
-        const myFormData = new FormData(document.querySelector('#startForm'));
-        const myFormObj = {}
-        myFormData.forEach((value, key) => myFormObj[key] = value)
-
-        const playerOne = Player(myFormObj.p1, myFormObj.s1)
-        const playerTwo = Player(myFormObj.p2, myFormObj.s2)
-        playGame(playerOne, playerTwo)
-        return 
-    }
-
+const makePlayer = function () {
     let decider = 2;
     const Player = function (name, symbol) {
         const title = name ? name[0].toUpperCase() + name.substr(1).toLowerCase() : decider % 2 === 0 ? 'X' : 'O'
@@ -70,6 +69,47 @@ const allNames = (function () {
             marker
         }
     }
+    return {
+        Player
+    }
+}
+const allNames = (function () {
+    const { Player } = makePlayer()
+
+    const makeFormData = function () {
+        const myFormData = new FormData(document.querySelector('#startForm'));
+        const myFormObj = {}
+        myFormData.forEach((value, key) => myFormObj[key] = value)
+        const playerOne = Player(myFormObj.p1, myFormObj.s1)
+        const playerTwo = Player(myFormObj.p2, myFormObj.s2)
+        return playGame(playerOne, playerTwo)
+    }
+
+    const restart = function () {
+        return window.open('./index.html', '_self')
+    }
+    const reload = function () {
+        sounds.playStart()
+        results.classList.add('hidden')
+        for (i of squares.allButtons) {
+            i.classList.remove('firstMark')
+            i.classList.remove('secondMark')
+        }
+        playableArea.classList.remove('hidden')
+        makeFormData()
+        return
+        //return window.open('./index.html', "_self")
+    };
+    const pickNames = function (event) {
+        event.preventDefault();
+
+        sounds.playStart()
+        startModal.classList.add('hidden')
+        playableArea.classList.remove('hidden')
+        makeFormData()
+        return
+    }
+
 
     reloadButton.addEventListener('click', reload)
     restartButton.addEventListener('click', restart)
@@ -142,7 +182,9 @@ const playGame = function (playerOne, playerTwo) {
         const alternate = function () {
             if (won === true) return
             let thing = test.check()
-            if (Array.from(this.classList).includes('secondMark') || Array.from(this.classList).includes("firstMark")) return
+
+            let classListArray = Array.from(this.classList);
+            if (classListArray.includes('secondMark') || classListArray.includes("firstMark")) return
             thing ? this.classList.add('secondMark') : this.classList.add('firstMark')
             thing ? sounds.playSound2() : sounds.playSound1()
             test.addOne()
@@ -160,42 +202,53 @@ const playGame = function (playerOne, playerTwo) {
     })()
 }
 
-const sounds = (function () {
-    const startSound = new Audio('sounds/arcade-start.wav')
-    const placeMarker1 = new Audio('sounds/place1.mp3')
-    const placeMarker2 = new Audio('sounds/place2.mp3')
 
-    placeMarker1.volume = 0.3
-    placeMarker2.volume = 0.3
-    startSound.volume = 0.38
+/*
+// here is where the AI will go
+const AI = (function () {
+    // this constructor is used following a tutorial
+    const { Player } = makePlayer()
+    const computer = (() => {
+        const makeComputer = Player('Machine', 'M')
+        makeComputer.maxDepth = -1
+        makeComputer.nodesMap = new Map()
 
-    placeMarker1.mozPreservesPitch = true;
-    placeMarker2.mozPreservesPitch = true;
-
-    placeMarker1.playbackRate = 2
-    placeMarker2.playbackRate = 2
-
-    const playSound1 = () => {
-        placeMarker1.load()
-        placeMarker1.play()
-        return
+        return makeComputer
+    })()
+    const easyAI = () => {
+        let holder = []
+        const randomInt = () => {
+            return Math.floor(Math.random() * 9)
+        }
+        const checkRandom = () => {
+            let number = randomInt()
+            return holder.includes(number) ? checkRandom(randomInt()) : holder.push(number)
+        }
+        const makeTurnEasy = () => {
+            if (holder.length >= 9) return console.log('No more inputs possible')
+            checkRandom()
+            console.log(holder)
+        }
+        // document.querySelector(`.${randomInt()}`)
+        return {
+            makeTurnEasy
+        }
     }
-    const playSound2 = () => {
-        placeMarker2.load()
-        placeMarker2.play()
-        return
+    const mediumAI = () => {
+
     }
-    const playStart = () => {
-        startSound.load()
-        startSound.play()
-        return
-    }
+
+
+
+    const { makeTurnEasy } = easyAI()
+    // const {makeTurnMedium} = mediumAI
+
     return {
-        playSound1,
-        playSound2,
-        playStart
+        computer,
+        makeTurnEasy
     }
 })()
+*/
 
 /*
 10. Create an option to select player or Bot
