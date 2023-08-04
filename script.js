@@ -43,6 +43,7 @@ const sounds = (function () {
         playStart
     }
 })()
+
 const squares = (function () {
     let squares = []
     for (let i = 1; i <= 9; i++) {
@@ -53,14 +54,34 @@ const squares = (function () {
         playableArea.appendChild(tile)
     }
     const allButtons = document.querySelectorAll('.tile')
-    sounds.playStart
     return { allButtons }
 })()
 
 const makePlayer = function () {
     let decider = 2;
+
     const Player = function (name, symbol) {
-        const title = name ? name[0].toUpperCase() + name.substr(1).toLowerCase() : decider % 2 === 0 ? 'X' : 'O'
+
+        const title = (function(){
+            const makeCapitalization = function(word) {
+                word = word.replaceAll(/([^A-Z\\])+/gi, '')
+                return !word ? '' : word.length === 1 ? 
+                word.toUpperCase() : 
+                word[0].toUpperCase() + word.substr(1).toLowerCase()
+            }
+            let splitName = name.split(' ')
+            if (!(name)){
+                return decider % 2 === 0 ? 'X' : 'O'
+            } else if (splitName.length === 1) {
+                return makeCapitalization(name)
+            } else{
+                let properName = splitName.map(word =>{
+                    return makeCapitalization(word)
+                }) 
+                return properName.join(' ')
+            }
+        })()
+
         const marker = symbol ? symbol[0].toUpperCase() : decider % 2 === 0 ? 'X' : 'O'
         decider++
 
@@ -73,6 +94,7 @@ const makePlayer = function () {
         Player
     }
 }
+
 const allNames = (function () {
     const { Player } = makePlayer()
 
@@ -100,6 +122,7 @@ const allNames = (function () {
         return
         //return window.open('./index.html', "_self")
     };
+
     const pickNames = function (event) {
         event.preventDefault();
 
@@ -109,7 +132,6 @@ const allNames = (function () {
         makeFormData()
         return
     }
-
 
     reloadButton.addEventListener('click', reload)
     restartButton.addEventListener('click', restart)
